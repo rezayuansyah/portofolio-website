@@ -1,0 +1,232 @@
+erDiagram
+    USERS ||--o{ MODEL_HAS_ROLES : "memiliki"
+    ROLES ||--o{ MODEL_HAS_ROLES : "ditugaskan"
+    ROLES ||--o{ ROLE_HAS_PERMISSIONS : "memiliki"
+    PERMISSIONS ||--o{ ROLE_HAS_PERMISSIONS : "diberikan"
+
+    USERS ||--o{ PROJECTS : "membuat"
+    PROJECTS ||--o{ PROJECT_IMAGES : "memiliki"
+    PROJECTS }o--o{ TECHNOLOGIES : "menggunakan"
+    PROJECTS ||--o{ PROJECT_TECHNOLOGY : "via"
+    TECHNOLOGIES ||--o{ PROJECT_TECHNOLOGY : "via"
+
+    USERS ||--o{ POSTS : "menulis"
+    POSTS }o--|| CATEGORIES : "termasuk"
+    POSTS }o--o{ TAGS : "diberi"
+    POSTS ||--o{ POST_TAG : "via"
+    TAGS ||--o{ POST_TAG : "via"
+    POSTS ||--o{ COMMENTS : "memiliki"
+
+    USERS ||--o{ EXPERIENCES : "memiliki"
+    USERS ||--o{ EDUCATIONS : "memiliki"
+    USERS ||--o{ CERTIFICATIONS : "memiliki"
+    USERS ||--o{ TESTIMONIALS : "menerima"
+
+    USERS ||--o{ MESSAGES : "menerima"
+    USERS ||--o{ MEDIA : "mengunggah"
+    USERS ||--o{ ACTIVITY_LOGS : "melakukan"
+    USERS ||--o{ SITE_SETTINGS : "mengelola"
+
+    USERS {
+        bigint id PK
+        string name
+        string email UK
+        string password
+        timestamp email_verified_at
+        boolean two_factor_enabled
+        string avatar
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    ROLES {
+        bigint id PK
+        string name UK
+        string guard_name
+        timestamp created_at
+    }
+
+    PERMISSIONS {
+        bigint id PK
+        string name UK
+        string guard_name
+        timestamp created_at
+    }
+
+    ROLE_HAS_PERMISSIONS {
+        bigint role_id FK
+        bigint permission_id FK
+    }
+
+    MODEL_HAS_ROLES {
+        bigint role_id FK
+        bigint model_id FK
+        string model_type
+    }
+
+    PROJECTS {
+        bigint id PK
+        bigint user_id FK
+        string title
+        string slug UK
+        text description
+        string demo_url
+        string repo_url
+        string thumbnail
+        enum status
+        boolean is_featured
+        integer sort_order
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    PROJECT_IMAGES {
+        bigint id PK
+        bigint project_id FK
+        string image_path
+        string caption
+        integer sort_order
+    }
+
+    TECHNOLOGIES {
+        bigint id PK
+        string name UK
+        string icon
+        string category
+        integer level
+    }
+
+    PROJECT_TECHNOLOGY {
+        bigint project_id FK
+        bigint technology_id FK
+    }
+
+    CATEGORIES {
+        bigint id PK
+        string name UK
+        string slug UK
+        text description
+    }
+
+    TAGS {
+        bigint id PK
+        string name UK
+        string slug UK
+    }
+
+    POSTS {
+        bigint id PK
+        bigint user_id FK
+        bigint category_id FK
+        string title
+        string slug UK
+        text excerpt
+        longtext content
+        string cover_image
+        enum status
+        timestamp published_at
+        integer views_count
+        timestamp created_at
+        timestamp updated_at
+    }
+
+    POST_TAG {
+        bigint post_id FK
+        bigint tag_id FK
+    }
+
+    COMMENTS {
+        bigint id PK
+        bigint post_id FK
+        bigint parent_id FK
+        string author_name
+        string author_email
+        text content
+        enum status
+        timestamp created_at
+    }
+
+    EXPERIENCES {
+        bigint id PK
+        bigint user_id FK
+        string company
+        string position
+        text description
+        date start_date
+        date end_date
+        boolean is_current
+    }
+
+    EDUCATIONS {
+        bigint id PK
+        bigint user_id FK
+        string institution
+        string degree
+        string field_of_study
+        date start_date
+        date end_date
+    }
+
+    CERTIFICATIONS {
+        bigint id PK
+        bigint user_id FK
+        string title
+        string issuer
+        date issued_at
+        date expires_at
+        string credential_url
+    }
+
+    TESTIMONIALS {
+        bigint id PK
+        bigint user_id FK
+        string author_name
+        string author_role
+        string author_company
+        string author_photo
+        text content
+        boolean is_approved
+        integer sort_order
+    }
+
+    MESSAGES {
+        bigint id PK
+        bigint user_id FK
+        string sender_name
+        string sender_email
+        string subject
+        text body
+        boolean is_read
+        timestamp created_at
+    }
+
+    MEDIA {
+        bigint id PK
+        bigint uploaded_by FK
+        string file_name
+        string file_path
+        string mime_type
+        bigint size
+        string mediable_type
+        bigint mediable_id
+        timestamp created_at
+    }
+
+    SITE_SETTINGS {
+        bigint id PK
+        bigint updated_by FK
+        string key UK
+        text value
+        timestamp updated_at
+    }
+
+    ACTIVITY_LOGS {
+        bigint id PK
+        bigint user_id FK
+        string action
+        string subject_type
+        bigint subject_id
+        json properties
+        string ip_address
+        timestamp created_at
+    }
